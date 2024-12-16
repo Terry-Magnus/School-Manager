@@ -4,9 +4,7 @@ export default function AuthLayout() {
   return (
     <div className="container h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-[#6825bd] p-10 text-white lg:flex">
-        <div className="flex items-center text-3xl font-large">
-          School Manager
-        </div>
+        <div className="flex items-center text-3xl font-large">CampusTrack</div>
       </div>
       <div className="lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
