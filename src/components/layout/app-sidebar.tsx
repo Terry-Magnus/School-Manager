@@ -36,9 +36,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuButton>
         ))}
 
-        <SidebarMenuButton className="mt-auto" tooltip="Logout">
-          <LogOut className="text-red-600" />
-          <span className="text-red-600">Logout</span>
+        <SidebarMenuButton asChild className="mt-auto" tooltip="Logout">
+          <Link to="/login">
+            <LogOut className="text-red-600" />
+            <span className="text-red-600">Logout</span>
+          </Link>
         </SidebarMenuButton>
       </SidebarContent>
       {/* <SidebarRail /> */}
