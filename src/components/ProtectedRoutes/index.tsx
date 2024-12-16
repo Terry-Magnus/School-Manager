@@ -2,9 +2,9 @@ import { Navigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-interface IProtectedRoutesProps {}
+// interface IProtectedRoutesProps {}
 
-const ProtectedRoutes = (props: IProtectedRoutesProps) => {
+const ProtectedRoutes = () => {
   const isLoggedin: boolean = true;
   const location = useLocation();
 

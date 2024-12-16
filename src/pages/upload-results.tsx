@@ -1,6 +1,4 @@
-type Props = {};
-
-const UploadResults = (props: Props) => {
+const UploadResults = () => {
   return <div>UploadResults</div>;
 };
 
