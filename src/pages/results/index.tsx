@@ -21,7 +21,7 @@ export default function Results() {
   const loadResults = async () => {
     setLoading(true);
     try {
-      const data = await fetchStudentResults(user!.regNumber);
+      const data = await fetchStudentResults(user!.regNumber!);
       setResults(data);
     } catch (error) {
       console.error("Error fetching courses:", error);
