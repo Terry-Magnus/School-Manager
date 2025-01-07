@@ -1,3 +1,4 @@
+import userLogin from "@/api/auth/user-login";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,11 +8,62 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import CustomAlert, { IAlertProps } from "@/components/ui/custom-alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/use-auth";
+import { numbersOnlyRegex } from "@/lib/utils";
+import { TFormEvent, TInputChangeEvent } from "@/types";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [regNumber, setRegNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState<IAlertProps | null>(null);
+  const { setUser } = useAuth();
+
+  const handleLogin = async (e: TFormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const userCredential = await userLogin(regNumber, password);
+      setUser(userCredential.user);
+      setSuccess(true);
+      setError(false);
+      // Show success alert
+      setAlert({
+        type: "success",
+        title: "Login Successful",
+        description:
+          "You have successfully logged in. Redirecting to your dashboard...",
+      });
+    } catch (err: any) {
+      // Show error alert
+      setSuccess(false);
+      setError(true);
+      setAlert({
+        type: "error",
+        title: "Login Failed",
+        description: err.message || "An error occurred while logging in.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAlertClose = () => {
+    setAlert(null);
+    if (success) {
+      navigate("/dashboard");
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="space-y-1">
@@ -20,36 +72,67 @@ export default function Login() {
           Enter your details below to view your details
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" />
-        </div>
-        <p className=" text-right text-[10px] text-muted-foreground mb-2">
-          <Link to="/forgot-password" className="hover:text-primary">
-            Forgot Password
+      <CardContent>
+        <form onSubmit={handleLogin} className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="regNumber">Registration Number</Label>
+            <Input
+              name="regNumber"
+              id="regNumber"
+              type="text"
+              required
+              placeholder="20231946323"
+              inputMode="numeric"
+              value={regNumber}
+              className={`${error && "border-red-600"}`}
+              onChange={(e: TInputChangeEvent) =>
+                e.target.value.match(numbersOnlyRegex) &&
+                setRegNumber(e.target.value)
+              }
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              name="password"
+              id="password"
+              type="password"
+              required
+              className={`${error && "border-red-600"}`}
+              value={password}
+              onChange={(e: TInputChangeEvent) => setPassword(e.target.value)}
+            />
+          </div>
+          <p className=" text-right text-[10px] text-muted-foreground mb-2">
+            <Link to="/forgot-password" className="hover:text-primary">
+              Forgot Password
+            </Link>
+          </p>
+          <Button type="submit" className="w-full">
+            {loading ? "Loading" : "Login"}
+          </Button>
+        </form>
+      </CardContent>
+      <CardFooter className="block">
+        <p className="px-8 text-center text-sm text-muted-foreground mb-4">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Sign up
           </Link>
         </p>
-      </CardContent>
-      <CardFooter>
-        <Button className="w-full">
-          <Link to="/dashboard">Login</Link>
-        </Button>{" "}
+        {alert && (
+          <CustomAlert
+            type={alert.type}
+            title={alert.title}
+            description={alert.description}
+            duration={2500}
+            onClose={handleAlertClose} // Close the alert
+          />
+        )}
       </CardFooter>
-
-      <p className="px-8 text-center text-sm text-muted-foreground mb-4">
-        Don't have an account?{" "}
-        <Link
-          to="/signup"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Sign up
-        </Link>
-      </p>
     </Card>
   );
 }

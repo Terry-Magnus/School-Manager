@@ -72,6 +72,10 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --dialog-overlay: 0 0% 0%;
+
+    --dialog-foreground: 222.2 84% 4.9%;
   }
   .dark {
     --background: 224 71.4% 4.1%;
@@ -137,6 +141,8 @@
     --sidebar-border: 240 3.7% 15.9%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --overlay: rgba(0, 0, 0, 0.7);
   }
 }
 

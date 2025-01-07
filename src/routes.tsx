@@ -1,19 +1,23 @@
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import Login from "./pages/login";
 import NotFound from "./pages/error";
 import Signup from "./pages/signup";
-import StudentResults from "./pages/student-results";
-import UploadResults from "./pages/upload-results";
+import UploadResults from "./pages/results/upload";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import Dashboard from "./pages/dashboard";
 import AuthLayout from "./components/layout/auth-layout";
 import AppLayout from "./components/layout/app-layout";
 import Settings from "./pages/settings";
 import Courses from "./pages/courses";
-import Support from "./pages/support";
 import ForgotPassword from "./pages/forgot-password";
 import AdminLogin from "./pages/admin-login";
 import ResetPassword from "./pages/reset-password";
+import AdminSignup from "./pages/admin-signup";
+import AddCourses from "./pages/courses/add";
+import Results from "./pages/results";
+import RegisterCourses from "./pages/courses/register";
+import CourseList from "./pages/courses/course-list";
+import ResultList from "./pages/results/result-list";
 
 const routes = createBrowserRouter([
   {
@@ -23,11 +27,9 @@ const routes = createBrowserRouter([
   },
   {
     element: (
-      <AppLayout>
-        {/* <AuthProvider> */}
-        <ProtectedRoutes />
-        {/* </AuthProvider> */}
-      </AppLayout>
+      <ProtectedRoutes>
+        <AppLayout />
+      </ProtectedRoutes>
     ),
     errorElement: <NotFound />,
     children: [
@@ -36,16 +38,20 @@ const routes = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "profile",
-        element: <Login />,
-        // errorElement: <NotFound/>
+        path: "results",
+        element: <Outlet />,
+        children: [
+          { index: true, element: <Results /> },
+          { path: "upload", element: <UploadResults /> },
+          { path: "all", element: <ResultList /> },
+        ],
       },
       {
         path: "results",
-        element: <StudentResults />,
+        element: <Results />,
       },
       {
-        path: "upload-result",
+        path: "results/upload",
         element: <UploadResults />,
       },
       {
@@ -54,11 +60,16 @@ const routes = createBrowserRouter([
       },
       {
         path: "courses",
-        element: <Courses />,
-      },
-      {
-        path: "support",
-        element: <Support />,
+        element: <Outlet />,
+        children: [
+          { index: true, element: <Courses /> },
+          { path: "add", element: <AddCourses /> },
+          { path: "all", element: <CourseList /> },
+          {
+            path: "register",
+            element: <RegisterCourses />,
+          },
+        ],
       },
     ],
   },
@@ -67,29 +78,32 @@ const routes = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        path: "login",
+        path: "/login",
         element: <Login />,
-        // errorElement: <NotFound/>
       },
       {
         path: "signup",
         element: <Signup />,
-        // errorElement: <NotFound/>
       },
       {
         path: "admin/login",
         element: <AdminLogin />,
-        // errorElement: <NotFound/>
+      },
+      {
+        path: "admin/signup",
+        element: <AdminSignup />,
+      },
+      {
+        path: "admin/forgot-password",
+        element: <ForgotPassword />,
       },
       {
         path: "forgot-password",
         element: <ForgotPassword />,
-        // errorElement: <NotFound/>
       },
       {
         path: "reset-password",
         element: <ResetPassword />,
-        // errorElement: <NotFound/>
       },
     ],
   },

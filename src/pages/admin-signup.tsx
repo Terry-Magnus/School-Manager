@@ -12,8 +12,7 @@ import {
 import CustomAlert, { IAlertProps } from "@/components/ui/custom-alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { numbersOnlyRegex } from "@/lib/utils";
-import { TInputChangeEvent, UserSignup } from "@/types";
+import { TFormEvent, TInputChangeEvent, UserSignup } from "@/types";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { USERROLESENUM } from "@/types/enums";
@@ -21,13 +20,12 @@ import { USERROLESENUM } from "@/types/enums";
 const initialValue = {
   name: "",
   email: "",
-  regNumber: "",
   password: "",
   confirm_password: "",
-  role: USERROLESENUM.STUDENT,
+  role: USERROLESENUM.ADMIN,
 };
 
-export default function Signup() {
+export default function AdminSignup() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -35,7 +33,8 @@ export default function Signup() {
   const [alert, setAlert] = useState<IAlertProps | null>(null);
   const [formData, setFormData] = useState<UserSignup>(initialValue);
 
-  const handleSignup = async () => {
+  const handleSignup = async (e: TFormEvent) => {
+    e.preventDefault();
     if (formData.password !== formData.confirm_password) {
       setError(true);
       setAlert({
@@ -54,7 +53,7 @@ export default function Signup() {
         setAlert({
           type: "success",
           title: "Signup Successful",
-          description: "Student Account created successfully",
+          description: "Admin account created successfully",
         });
       } catch (err: any) {
         // Show error alert
@@ -74,8 +73,9 @@ export default function Signup() {
   const handleAlertClose = () => {
     setAlert(null);
     if (success) {
-      navigate("/login");
+      navigate("/admin/login");
     }
+    setError(false);
   };
 
   const handleInputChange = (e: TInputChangeEvent) => {
@@ -95,71 +95,71 @@ export default function Signup() {
           Enter your email below to create your account
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input
-            name="name"
-            id="name"
-            type="text"
-            placeholder="Ex: John Doe"
-            value={formData.name}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="regNumber">Registration Number</Label>
-          <Input
-            name="regNumber"
-            id="regNumber"
-            type="text"
-            placeholder="20231946323"
-            inputMode="numeric"
-            value={formData.regNumber}
-            onChange={(e: TInputChangeEvent) =>
-              e.target.value.match(numbersOnlyRegex) && handleInputChange(e)
-            }
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            name="email"
-            id="email"
-            type="email"
-            placeholder="m@example.com"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            name="password"
-            id="password"
-            className={`${error && "border-red-600"}`}
-            type="password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Confirm Password</Label>
-          <Input
-            name="confirm_password"
-            id="confirm_password"
-            type="password"
-            className={`${error && "border-red-600"}`}
-            value={formData.confirm_password}
-            onChange={handleInputChange}
-          />
-        </div>
+      <CardContent>
+        <form onSubmit={handleSignup} className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="name">Full Name</Label>
+            <Input
+              name="name"
+              id="name"
+              type="text"
+              placeholder="Ex: John Doe"
+              value={formData.name}
+              required
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              name="email"
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              value={formData.email}
+              required
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              name="password"
+              id="password"
+              className={`${error && "border-red-600"}`}
+              type="password"
+              required
+              value={formData.password}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Confirm Password</Label>
+            <Input
+              name="confirm_password"
+              id="confirm_password"
+              type="password"
+              required
+              className={`${error && "border-red-600"}`}
+              value={formData.confirm_password}
+              onChange={handleInputChange}
+            />
+          </div>
+          <Button disabled={loading} type="submit" className="w-full">
+            {loading ? "Loading" : "Create account"}
+          </Button>
+        </form>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleSignup} className="w-full">
-          {loading ? "Loading" : "Create account"}
-        </Button>
-
+        <p className="px-8 text-center text-sm text-muted-foreground mb-4">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Log in
+          </Link>
+        </p>{" "}
         {alert && (
           <CustomAlert
             type={alert.type}
@@ -169,15 +169,6 @@ export default function Signup() {
           />
         )}
       </CardFooter>
-      <p className="px-8 text-center text-sm text-muted-foreground mb-4">
-        Already have an account?{" "}
-        <Link
-          to="/login"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Log in
-        </Link>
-      </p>
     </Card>
   );
 }
