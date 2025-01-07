@@ -59,7 +59,7 @@ export default function AdminLogin() {
   const handleAlertClose = () => {
     setAlert(null);
     if (success) {
-      navigate("/dashboard");
+      navigate("/courses/all");
     }
   };
 
