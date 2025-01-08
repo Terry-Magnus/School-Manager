@@ -3,7 +3,6 @@ import {
   FileText,
   LayoutDashboard,
   ListCheck,
-  MessageCircleWarning,
   Settings2,
 } from "lucide-react";
 // import { SidebarData } from "../types";
@@ -29,11 +28,6 @@ export const sidebarData = {
       title: "Settings",
       url: "/settings",
       icon: Settings2,
-    },
-    {
-      title: "Help & Support",
-      url: "/support",
-      icon: MessageCircleWarning,
     },
   ],
   admin: [
