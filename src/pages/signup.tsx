@@ -2,7 +2,6 @@
 import userSignup from "@/api/auth/user-signup";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -13,7 +12,7 @@ import CustomAlert, { IAlertProps } from "@/components/ui/custom-alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { numbersOnlyRegex } from "@/lib/utils";
-import { TInputChangeEvent, UserSignup } from "@/types";
+import { TFormEvent, TInputChangeEvent, UserSignup } from "@/types";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { USERROLESENUM } from "@/types/enums";
@@ -35,7 +34,9 @@ export default function Signup() {
   const [alert, setAlert] = useState<IAlertProps | null>(null);
   const [formData, setFormData] = useState<UserSignup>(initialValue);
 
-  const handleSignup = async () => {
+  const handleSignup = async (e: TFormEvent) => {
+    e.preventDefault();
+
     if (formData.password !== formData.confirm_password) {
       setError(true);
       setAlert({
@@ -88,78 +89,110 @@ export default function Signup() {
   };
 
   return (
-    <Card>
+    <>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Create an account</CardTitle>
         <CardDescription>
           Enter your email below to create your account
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input
-            name="name"
-            id="name"
-            type="text"
-            placeholder="Ex: John Doe"
-            value={formData.name}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="regNumber">Registration Number</Label>
-          <Input
-            name="regNumber"
-            id="regNumber"
-            type="text"
-            placeholder="20231946323"
-            inputMode="numeric"
-            value={formData.regNumber}
-            onChange={(e: TInputChangeEvent) =>
-              e.target.value.match(numbersOnlyRegex) && handleInputChange(e)
-            }
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            name="email"
-            id="email"
-            type="email"
-            placeholder="m@example.com"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            name="password"
-            id="password"
-            className={`${error && "border-red-600"}`}
-            type="password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Confirm Password</Label>
-          <Input
-            name="confirm_password"
-            id="confirm_password"
-            type="password"
-            className={`${error && "border-red-600"}`}
-            value={formData.confirm_password}
-            onChange={handleInputChange}
-          />
-        </div>
+      <CardContent>
+        <form onSubmit={handleSignup} className="grid gap-4">
+          <Label htmlFor="name" className="grid gap-2">
+            <span aria-label="password">
+              Full Name
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
+            <Input
+              name="name"
+              id="name"
+              type="text"
+              placeholder="Ex: John Doe"
+              value={formData.name}
+              required
+              onChange={handleInputChange}
+            />
+          </Label>
+          <Label className="grid gap-2" htmlFor="regNumber">
+            <span aria-label="password">
+              Registration Number
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
+            <Input
+              name="regNumber"
+              id="regNumber"
+              type="text"
+              required
+              placeholder="Ex: 20231946323"
+              inputMode="numeric"
+              value={formData.regNumber}
+              className={`${error && "border-red-600"}`}
+              onChange={(e) =>
+                e.target.value.match(numbersOnlyRegex) && handleInputChange(e)
+              }
+            />
+          </Label>
+          <Label htmlFor="email" className="grid gap-2">
+            <span aria-label="password">
+              Email
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
+            <Input
+              name="email"
+              id="email"
+              type="email"
+              placeholder="Ex: m@example.com"
+              value={formData.email}
+              required
+              onChange={handleInputChange}
+            />
+          </Label>
+          <Label className="grid gap-2" htmlFor="password">
+            <span aria-label="password">
+              Password
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
+            <Input
+              name="password"
+              id="password"
+              type="password"
+              required
+              className={`${error && "border-red-600"}`}
+              value={formData.password}
+              onChange={handleInputChange}
+            />
+          </Label>
+          <Label htmlFor="password" className="grid gap-2">
+            <span aria-label="password">
+              Confirm Password
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
+            <Input
+              name="confirm_password"
+              id="confirm_password"
+              type="password"
+              required
+              className={`${error && "border-red-600"}`}
+              value={formData.confirm_password}
+              onChange={handleInputChange}
+            />
+          </Label>
+          <Button type="submit" className="w-full">
+            {loading ? "Loading" : "Create account"}
+          </Button>
+        </form>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleSignup} className="w-full">
-          {loading ? "Loading" : "Create account"}
-        </Button>
-
         {alert && (
           <CustomAlert
             type={alert.type}
@@ -168,16 +201,16 @@ export default function Signup() {
             onClose={handleAlertClose} // Close the alert
           />
         )}
+        <p className="px-8 text-center text-sm text-muted-foreground mb-4">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="underline underline-offset-4 hover:text-primary"
+          >
+            Log in
+          </Link>
+        </p>
       </CardFooter>
-      <p className="px-8 text-center text-sm text-muted-foreground mb-4">
-        Already have an account?{" "}
-        <Link
-          to="/login"
-          className="underline underline-offset-4 hover:text-primary"
-        >
-          Log in
-        </Link>
-      </p>
-    </Card>
+    </>
   );
 }

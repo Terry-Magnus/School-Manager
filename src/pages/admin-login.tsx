@@ -1,7 +1,6 @@
 import userLogin from "@/api/auth/user-login";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -64,31 +63,40 @@ export default function AdminLogin() {
   };
 
   return (
-    <Card>
+    <>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">
           Login into your Admin account
         </CardTitle>
-        <CardDescription>
-          Enter your email below to create your account
-        </CardDescription>
+        <CardDescription>Enter your account details below</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleLogin} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+          <Label className="grid gap-2" htmlFor="email">
+            <span aria-label="password">
+              Email
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
             <Input
-              id="email"
+              name="email"
               type="email"
-              placeholder="m@example.com"
+              id="email"
+              placeholder="Ex: m@example.com"
               className={`${error && "border-red-600"}`}
               value={email}
               required
               onChange={(e: TInputChangeEvent) => setEmail(e.target.value)}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+          </Label>
+          <Label className="grid gap-2" htmlFor="password">
+            <span aria-label="password">
+              Password
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
             <Input
               name="password"
               id="password"
@@ -98,7 +106,7 @@ export default function AdminLogin() {
               required
               onChange={(e: TInputChangeEvent) => setPassword(e.target.value)}
             />
-          </div>{" "}
+          </Label>
           <Button disabled={loading} type="submit" className="w-full">
             {loading ? "Loading" : "Login"}
           </Button>
@@ -120,6 +128,6 @@ export default function AdminLogin() {
           />
         )}
       </CardFooter>
-    </Card>
+    </>
   );
 }

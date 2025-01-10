@@ -2,7 +2,6 @@
 import userSignup from "@/api/auth/user-signup";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -88,17 +87,20 @@ export default function AdminSignup() {
   };
 
   return (
-    <Card>
+    <>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Create an account</CardTitle>
-        <CardDescription>
-          Enter your email below to create your account
-        </CardDescription>
+        <CardDescription>Fill in the details below</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSignup} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="name">Full Name</Label>
+          <Label htmlFor="name" className="grid gap-2">
+            <span aria-label="password">
+              Full Name
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
             <Input
               name="name"
               id="name"
@@ -108,21 +110,31 @@ export default function AdminSignup() {
               required
               onChange={handleInputChange}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+          </Label>
+          <Label htmlFor="email" className="grid gap-2">
+            <span aria-label="password">
+              Email
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
             <Input
               name="email"
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="Ex: m@example.com"
               value={formData.email}
               required
               onChange={handleInputChange}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+          </Label>
+          <Label htmlFor="password" className="grid gap-2">
+            <span aria-label="password">
+              Password
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
             <Input
               name="password"
               id="password"
@@ -132,9 +144,14 @@ export default function AdminSignup() {
               value={formData.password}
               onChange={handleInputChange}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Confirm Password</Label>
+          </Label>
+          <Label htmlFor="password" className="grid gap-2">
+            <span aria-label="password">
+              Confirm Password
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
             <Input
               name="confirm_password"
               id="confirm_password"
@@ -144,7 +161,7 @@ export default function AdminSignup() {
               value={formData.confirm_password}
               onChange={handleInputChange}
             />
-          </div>
+          </Label>
           <Button disabled={loading} type="submit" className="w-full">
             {loading ? "Loading" : "Create account"}
           </Button>
@@ -169,6 +186,6 @@ export default function AdminSignup() {
           />
         )}
       </CardFooter>
-    </Card>
+    </>
   );
 }

@@ -1,7 +1,6 @@
 import userLogin from "@/api/auth/user-login";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -65,7 +64,7 @@ export default function Login() {
   };
 
   return (
-    <Card>
+    <>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Login to your account</CardTitle>
         <CardDescription>
@@ -74,14 +73,19 @@ export default function Login() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleLogin} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="regNumber">Registration Number</Label>
+          <Label className="grid gap-2" htmlFor="regNumber">
+            <span aria-label="password">
+              Registration Number
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
             <Input
               name="regNumber"
               id="regNumber"
               type="text"
               required
-              placeholder="20231946323"
+              placeholder="Ex: 20231946323"
               inputMode="numeric"
               value={regNumber}
               className={`${error && "border-red-600"}`}
@@ -90,9 +94,14 @@ export default function Login() {
                 setRegNumber(e.target.value)
               }
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+          </Label>
+          <Label className="grid gap-2" htmlFor="password">
+            <span aria-label="password">
+              Password
+              <i className="inline text-red-500" aria-hidden="true">
+                *
+              </i>
+            </span>
             <Input
               name="password"
               id="password"
@@ -102,7 +111,7 @@ export default function Login() {
               value={password}
               onChange={(e: TInputChangeEvent) => setPassword(e.target.value)}
             />
-          </div>
+          </Label>
           <p className=" text-right text-[10px] text-muted-foreground mb-2">
             <Link to="/forgot-password" className="hover:text-primary">
               Forgot Password
@@ -133,6 +142,6 @@ export default function Login() {
           />
         )}
       </CardFooter>
-    </Card>
+    </>
   );
 }
