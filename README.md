@@ -1,58 +1,128 @@
-# React + TypeScript + Vite
+# School Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**School Manager** is a web-based application designed to streamline the management of school operations, including course administration and student registrations. Built with modern web technologies, it offers an intuitive interface for both administrators and students.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Admin Functionality**:
 
-- Configure the top-level `parserOptions` property like this:
+  - Create, update, and delete courses.
+  - View all registered students for each course.
+  - Manage course enrollment efficiently.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
+- **Student Functionality**:
+  - Browse available courses.
+  - Register for desired courses.
+  - View and manage their enrolled courses.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Technologies Used
 
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
+- **Frontend**:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: "18.3" } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs["jsx-runtime"].rules,
-  },
-});
-// check if results are general or for specific students
-// prevent students from registering a course twice
-// add option to edit/delete a result on the admin side
+  - [React](https://reactjs.org/) with [TypeScript](https://www.typescriptlang.org/)
+  - [Vite](https://vitejs.dev/) for fast development and build tooling
+  - [Tailwind CSS](https://tailwindcss.com/) for styling
 
-// auth.tsx:27 [2025-01-02T13:43:02.434Z] @firebase/firestore: Firestore (11.1.0): Could not reach Cloud Firestore backend. Connection failed 1 times. Most recent error: FirebaseError: [code=unknown]: Fetching auth token failed: Firebase: Error (auth/network-request-failed).
-// This typically indicates that your device does not have a healthy Internet connection at the moment. The client will operate in offline mode until it is able to successfully connect to the backend.
+- **Backend**:
+  - [Firebase](https://firebase.google.com/) for authentication and Firestore as the database
 
-// Firebase doesn't add timestamps automatically
-```
+## Installation
+
+To set up the project locally, follow these steps:
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/Terry-Magnus/School-Manager.git
+   ```
+
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd School-Manager
+   ```
+
+3. **Install dependencies**:
+
+   Ensure you have [Node.js](https://nodejs.org/) installed. Then, run:
+
+   ```bash
+   npm install
+   ```
+
+4. **Configure Firebase**:
+
+   - Create a Firebase project in the [Firebase Console](https://console.firebase.google.com/).
+   - Set up Firestore and Authentication.
+   - Obtain your Firebase configuration and replace the placeholder in the project.
+
+5. **Start the development server**:
+
+   ```bash
+   npm run dev
+   ```
+
+   The application will be accessible at `http://localhost:3000`.
+
+## Usage
+
+- **Admin**:
+
+  - Log in using admin credentials.
+  - Navigate to the "Courses" section to manage courses.
+  - Use the interface to add, edit, or delete courses.
+  - Upload Student results
+
+- **Student**:
+  - Register or log in using student credentials.
+  - Browse available courses and register for desired ones.
+  - View registered courses in the "My Courses" section.
+  - View results from registered courses.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch:
+
+   ```bash
+   git checkout -b feature-name
+   ```
+
+3. Make your changes.
+4. Commit your changes:
+
+   ```bash
+   git commit -m "Description of changes"
+   ```
+
+5. Push to your branch:
+
+   ```bash
+   git push origin feature-name
+   ```
+
+6. Open a Pull Request detailing your changes.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+### Concerns I face while building
+
+- Admins viewing general results while students view only their results
+- Preventing students from registering a course twice
+- Admins having the option to edit/delete a course and result
+- Pagination
+- Adding timestamps
+- Debouncing search since volume of courses and students could become very large
