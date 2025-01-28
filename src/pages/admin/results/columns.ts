@@ -1,3 +1,4 @@
+import { capitalizeText } from "@/lib/utils";
 import { Result } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -18,10 +19,20 @@ export const columns: ColumnDef<ResultTableProps>[] = [
   {
     accessorKey: "semester",
     header: "Semester",
+    accessorFn: (origin) => {
+      return capitalizeText(origin.semester);
+    },
   },
   {
     accessorKey: "academicYear",
     header: "Session",
+  },
+  {
+    accessorKey: "student",
+    header: "Student",
+    accessorFn: (origin) => {
+      return `${origin.student.name} - ${origin.student.regNumber}`;
+    },
   },
   {
     accessorKey: "grade",

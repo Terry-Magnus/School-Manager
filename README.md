@@ -118,11 +118,12 @@ Contributions are welcome! To contribute:
 
 This project is licensed under the [MIT License](LICENSE).
 
-### Concerns I face while building
+### Things I Considered while building
 
 - Admins viewing general results while students view only their results
 - Preventing students from registering a course twice
-- Admins having the option to edit/delete a course and result
+- Admins having the option to edit/delete a course and result(There has to be some kind of approval system especially for modifying or deleteing a result. As for courses, i guess the no student has to have registered for it before deletion or a soft-delete would be allowed.)
 - Pagination
 - Adding timestamps
 - Debouncing search since volume of courses and students could become very large
+- Firebase is case-sensitive and does not support substring matching (e.g., searching for "Java" won't match "Advanced JavaScript").. So server side filtering using search inputs may prove ineffective unless using an external resource like Elastic search

@@ -2,12 +2,14 @@ import { Navigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { Spinner } from "../ui/spinner";
+import NotFound from "@/pages/error";
 
 type IProtectedRoutesProps = {
   children: React.ReactNode;
+  allowedRoles: "admin" | "student";
 };
 
-const ProtectedRoutes = ({ children }: IProtectedRoutesProps) => {
+const ProtectedRoutes = ({ children, allowedRoles }: IProtectedRoutesProps) => {
   const location = useLocation();
   const { user, loading } = useAuth();
 
@@ -20,10 +22,15 @@ const ProtectedRoutes = ({ children }: IProtectedRoutesProps) => {
     );
   }
 
-  //   const sessionExpired = () => {
-  //     // alert("Your session has expired, please log in again");
-  //     // return <Navigate to="/login" state={{ from: location }} />;
-  //   };
+  if (user?.role !== allowedRoles) {
+    return (
+      <NotFound
+        errorCode={401}
+        title="Unauthorized"
+        message="You are not authorized to visit this page"
+      />
+    );
+  }
 
   return user ? children : <Navigate to="/login" state={{ from: location }} />;
 };

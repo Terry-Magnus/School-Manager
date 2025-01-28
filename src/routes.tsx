@@ -2,22 +2,24 @@ import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
 import Login from "./pages/login";
 import NotFound from "./pages/error";
 import Signup from "./pages/signup";
-import UploadResults from "./pages/results/upload";
+import UploadResults from "./pages/admin/results/upload-result";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/student/dashboard";
 import AuthLayout from "./components/layout/auth-layout";
 import AppLayout from "./components/layout/app-layout";
 import Settings from "./pages/settings";
-import Courses from "./pages/courses";
+import StudentCourses from "./pages/student/courses";
 import ForgotPassword from "./pages/forgot-password";
-import AdminLogin from "./pages/admin-login";
+import AdminLogin from "./pages/admin/login";
 import ResetPassword from "./pages/reset-password";
-import AdminSignup from "./pages/admin-signup";
-import AddCourses from "./pages/courses/add";
-import Results from "./pages/results";
-import RegisterCourses from "./pages/courses/register";
-import CourseList from "./pages/courses/course-list";
-import ResultList from "./pages/results/result-list";
+import AdminSignup from "./pages/admin/signup";
+import AddCourses from "./pages/admin/courses/add-course";
+import Results from "./pages/student/results";
+import RegisterCourses from "./pages/student/courses/register";
+import AdminDashboard from "./pages/admin/dashboard";
+import ManageCourses from "./pages/admin/courses";
+import ManageResults from "./pages/admin/results";
+import ErrorBoundary from "./components/ProtectedRoutes/error-boundary";
 
 const routes = createBrowserRouter([
   {
@@ -27,8 +29,10 @@ const routes = createBrowserRouter([
   },
   {
     element: (
-      <ProtectedRoutes>
-        <AppLayout />
+      <ProtectedRoutes allowedRoles="student">
+        <ErrorBoundary>
+          <AppLayout />
+        </ErrorBoundary>
       </ProtectedRoutes>
     ),
     errorElement: <NotFound />,
@@ -43,17 +47,13 @@ const routes = createBrowserRouter([
         children: [
           { index: true, element: <Results /> },
           { path: "upload", element: <UploadResults /> },
-          { path: "all", element: <ResultList /> },
         ],
       },
       {
         path: "results",
         element: <Results />,
       },
-      {
-        path: "results/upload",
-        element: <UploadResults />,
-      },
+
       {
         path: "settings",
         element: <Settings />,
@@ -62,9 +62,8 @@ const routes = createBrowserRouter([
         path: "courses",
         element: <Outlet />,
         children: [
-          { index: true, element: <Courses /> },
-          { path: "add", element: <AddCourses /> },
-          { path: "all", element: <CourseList /> },
+          { index: true, element: <StudentCourses /> },
+          //   { path: "all", element: <CourseList /> },
           {
             path: "register",
             element: <RegisterCourses />,
@@ -74,7 +73,11 @@ const routes = createBrowserRouter([
     ],
   },
   {
-    element: <AuthLayout />,
+    element: (
+      <ErrorBoundary>
+        <AuthLayout />
+      </ErrorBoundary>
+    ),
     errorElement: <NotFound />,
     children: [
       {
@@ -104,6 +107,35 @@ const routes = createBrowserRouter([
       {
         path: "reset-password",
         element: <ResetPassword />,
+      },
+    ],
+  },
+  {
+    element: (
+      <ProtectedRoutes allowedRoles="admin">
+        <ErrorBoundary>
+          <AppLayout />
+        </ErrorBoundary>
+      </ProtectedRoutes>
+    ),
+    errorElement: <NotFound />,
+    children: [
+      {
+        path: "admin",
+        element: <Outlet />,
+        children: [
+          { path: "dashboard", element: <AdminDashboard /> },
+          { path: "courses", element: <ManageCourses /> },
+          {
+            path: "courses/add-new",
+            element: <AddCourses />,
+          },
+          { path: "results", element: <ManageResults /> },
+          {
+            path: "results/upload",
+            element: <UploadResults />,
+          },
+        ],
       },
     ],
   },

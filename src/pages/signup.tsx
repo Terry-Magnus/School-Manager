@@ -187,7 +187,7 @@ export default function Signup() {
               onChange={handleInputChange}
             />
           </Label>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Loading" : "Create account"}
           </Button>
         </form>

@@ -32,18 +32,23 @@ export const sidebarData = {
   ],
   admin: [
     {
+      title: "Dashboard",
+      url: "/admin/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
       title: "Courses",
-      url: "/courses/all",
+      url: "/admin/courses",
       icon: ListCheck,
     },
     {
       title: "Student Results",
-      url: "/results/all",
+      url: "/admin/results",
       icon: FileText,
     },
     {
       title: "Settings",
-      url: "/settings",
+      url: "/admin/settings",
       icon: Settings2,
     },
   ],

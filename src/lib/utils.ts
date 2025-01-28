@@ -1,5 +1,5 @@
 import { SidebarData } from "@/components/layout/types";
-import { Result } from "@/types";
+import { Faculty, Level, Result } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -64,6 +64,12 @@ export const calculateGPA = (results: Result[]): string | number => {
     : 0;
 };
 
+export const capitalizeText = (text: string) => {
+  return text
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 //   export const calculateCGPA = (results: Result[]): number => {
 //     let cumulativeQualityPoints = 0;
 //     let cumulativeCreditUnits = 0;
@@ -80,3 +86,23 @@ export const calculateGPA = (results: Result[]): string | number => {
 //       ? cumulativeQualityPoints / cumulativeCreditUnits
 //       : 0;
 //   };
+
+export const faculties: Faculty[] = [
+  "agriculture",
+  "arts",
+  "biological_sciences",
+  "business_administration",
+  "education",
+  "engineering",
+  "environmental_studies",
+  "health_sciences",
+  "law",
+  "medicine",
+  "pharmaceutical_sciences",
+  "physical_sciences",
+  "social_sciences",
+  "veterinary_medicine",
+  "vocational_technical_education",
+];
+
+export const levels: Level[] = ["100", "200", "300", "400", "500"];

@@ -19,7 +19,9 @@ export function Profile() {
         </Avatar>
       </Button>
       <div className="text-[10px]">
-        <p className="font-bold">{user?.name}</p>
+        <p className="font-bold">
+          {user?.name} ({user?.role})
+        </p>
         <p>{user?.email}</p>
       </div>
     </div>

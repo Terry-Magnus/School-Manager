@@ -1,5 +1,5 @@
 import { firestore } from "@/lib/firebaseConfig";
-import { Course } from "@/types";
+import { Course, Faculty, Level } from "@/types";
 import {
   collection,
   addDoc,
@@ -9,9 +9,13 @@ import {
   query,
   where,
   writeBatch,
+  orderBy,
+  startAfter,
   arrayRemove,
   serverTimestamp,
   getDoc,
+  limit,
+  //   QueryDocumentSnapshot,
   //   updateDoc,
   //   getDoc,
 } from "firebase/firestore";
@@ -65,7 +69,7 @@ export const registerStudentForCourse = async (
 
     const courseData = courseDoc.data();
     if (courseData?.students.includes(studentId)) {
-      throw new Error("Student is already registered for this course.");
+      throw new Error(`Student is already registered for ${courseData.title}`);
     }
 
     // Run as a batch to ensure both updates succeed or fail together
@@ -116,48 +120,96 @@ export const unregisterStudentFromCourse = async (
   }
 };
 
-export const fetchCourses = async (filters?: {
-  examOfficerId?: string;
-  semester?: string;
-  level?: number;
-}) => {
+export const fetchAllCourses = async (
+  pageSize: number = 10,
+  cursorDoc: any = null
+) => {
   try {
     const coursesRef = collection(firestore, "courses");
-    let q = query(coursesRef);
+    let coursesQuery = query(coursesRef);
 
-    if (filters?.examOfficerId) {
-      q = query(q, where("examOfficerId", "==", filters.examOfficerId));
-    }
-    if (filters?.semester) {
-      q = query(q, where("semester", "==", filters.semester));
-    }
-    if (filters?.level) {
-      q = query(q, where("level", "==", filters.level));
+    // Base query with ordering and limit
+    if (cursorDoc) {
+      coursesQuery = query(
+        coursesRef,
+        orderBy("title"),
+        startAfter(cursorDoc),
+        limit(pageSize)
+      );
+    } else {
+      coursesQuery = query(coursesRef, orderBy("title"), limit(pageSize));
     }
 
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map((doc) => ({
+    // Execute query
+    const querySnapshot = await getDocs(coursesQuery);
+
+    // Get documents
+    const courses = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as Course[];
+
+    return { courses };
   } catch (error) {
     console.error("Error fetching courses:", error);
     throw error;
   }
 };
 
-export const fetchStudentCourses = async (studentId: string) => {
+export const fetchCourses = async (
+  faculty: Faculty,
+  level: Level,
+  semester: "harmattan" | "rain"
+): Promise<Course[]> => {
   try {
-    const coursesRef = collection(firestore, "courses");
-    const q = query(coursesRef, where("students", "array-contains", studentId));
+    const coursesCollection = collection(firestore, "courses");
+
+    // Query courses where the student is in the "students" array
+    const q = query(
+      coursesCollection,
+      where("faculty", "==", faculty),
+      where("level", "==", Number(level)),
+      where("semester", "==", semester)
+    );
+
     const querySnapshot = await getDocs(q);
 
-    return querySnapshot.docs.map((doc) => ({
+    // Map the documents to Course objects
+    const courses: Course[] = querySnapshot.docs.map((doc) => ({
+      ...(doc.data() as Course),
       id: doc.id,
-      ...doc.data(),
-    })) as Course[];
+    }));
+
+    return courses;
   } catch (error) {
     console.error("Error fetching student courses:", error);
-    throw error;
+    throw new Error("Unable to fetch courses.");
+  }
+};
+
+export const fetchStudentCourses = async (
+  studentId: string // fetch courses based on student id
+): Promise<Course[]> => {
+  try {
+    const coursesCollection = collection(firestore, "courses");
+
+    // Query courses where the student is in the "students" array
+    const q = query(
+      coursesCollection,
+      where("students", "array-contains", studentId)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    // Map the documents to Course objects
+    const courses: Course[] = querySnapshot.docs.map((doc) => ({
+      ...(doc.data() as Course),
+      id: doc.id,
+    }));
+
+    return courses;
+  } catch (error) {
+    console.error("Error fetching student courses:", error);
+    throw new Error("Unable to fetch registered courses for the student.");
   }
 };

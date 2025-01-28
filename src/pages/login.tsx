@@ -117,7 +117,7 @@ export default function Login() {
               Forgot Password
             </Link>
           </p>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Loading" : "Login"}
           </Button>
         </form>

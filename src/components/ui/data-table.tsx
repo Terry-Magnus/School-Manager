@@ -8,9 +8,10 @@ import {
 interface DataTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
+  actions?: (row: T) => React.ReactNode; // Optional prop to render custom action buttons
 }
 
-const DataTable = <T,>({ data, columns }: DataTableProps<T>) => {
+const DataTable = <T,>({ data, columns, actions }: DataTableProps<T>) => {
   const table = useReactTable({
     data,
     columns,
@@ -36,6 +37,10 @@ const DataTable = <T,>({ data, columns }: DataTableProps<T>) => {
                       )}
                 </th>
               ))}
+              {actions && (
+                <th className="border border-gray-300 p-2">Actions</th>
+              )}
+              {/* Render Actions header */}
             </tr>
           ))}
         </thead>
@@ -49,6 +54,12 @@ const DataTable = <T,>({ data, columns }: DataTableProps<T>) => {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
+                {actions && (
+                  <td className="border border-gray-300 p-2">
+                    {actions(row.original)}{" "}
+                    {/* Render action buttons for each row */}
+                  </td>
+                )}
               </tr>
             ))
           ) : (

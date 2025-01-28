@@ -9,21 +9,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Course, TFormEvent, TInputChangeEvent } from "@/types";
+import { Course, Faculty, TFormEvent, TInputChangeEvent } from "@/types";
 import { useState } from "react";
 import CustomAlert, { IAlertProps } from "@/components/ui/custom-alert";
-import { useAuth } from "@/hooks/use-auth";
+import { capitalizeText, faculties } from "@/lib/utils";
 
 // Omit fields that will be handled automatically
-type IAddCourse = Omit<
-  Course,
-  "createdAt" | "id" | "students" | "examOfficerId" | "updatedAt"
->;
+type IAddCourse = Omit<Course, "createdAt" | "id" | "students" | "updatedAt">;
 const initialValues = {
   title: "",
   code: "",
   creditUnits: 1, // Initialize numeric fields with 1
   semester: "",
+  faculty: "",
   level: 100, // Default level
 };
 
@@ -32,7 +30,6 @@ export default function AddCourses() {
   const [success, setSuccess] = useState(false);
   const [alert, setAlert] = useState<IAlertProps | null>(null);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
 
   const handleChange = (e: TInputChangeEvent) => {
     const { name, value, type } = e.target;
@@ -56,10 +53,7 @@ export default function AddCourses() {
     setLoading(true);
 
     try {
-      await addCourse({
-        ...data,
-        examOfficerId: user!.uid,
-      });
+      await addCourse(data);
 
       setSuccess(true);
       // Show success alert
@@ -120,6 +114,31 @@ export default function AddCourses() {
         </div>
 
         <div className="grid gap-2">
+          <Label>Faculty</Label>
+          <Select
+            value={data.faculty}
+            onValueChange={(value) =>
+              setData((prev) => ({ ...prev, faculty: value }))
+            }
+          >
+            <SelectTrigger>
+              <SelectValue>
+                {data.faculty
+                  ? `${capitalizeText(data.faculty)}`
+                  : "Select Faculty"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {faculties.map((faculty: Faculty) => (
+                <SelectItem key={faculty} value={faculty}>
+                  {capitalizeText(faculty)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid gap-2">
           <Label htmlFor="creditUnits">Credit Units</Label>
           <Input
             id="creditUnits"
@@ -141,12 +160,19 @@ export default function AddCourses() {
               setData((prev) => ({ ...prev, semester: value }))
             }
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Select semester" />
+            <SelectTrigger className="w-25">
+              <SelectValue>
+                {data.semester
+                  ? `${capitalizeText(data.semester)}`
+                  : "Select Semester"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="FIRST">First Semester</SelectItem>
-              <SelectItem value="SECOND">Second Semester</SelectItem>
+              {["harmattan", "rain"].map((value) => (
+                <SelectItem key={value} value={value}>
+                  {capitalizeText(value)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

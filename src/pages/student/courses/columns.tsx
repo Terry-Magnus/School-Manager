@@ -1,7 +1,7 @@
 import { Course } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 
-type CourseTableProps = Omit<Course, "examOfficerId" | "students">;
+type CourseTableProps = Omit<Course, "students">;
 
 interface CourseColumnsProps {
   selectedCourses: string[];

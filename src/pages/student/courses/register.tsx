@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { fetchCourses, registerStudentForCourse } from "@/api/courses";
+import { registerStudentForCourse, fetchCourses } from "@/api/courses";
 import { useAuth } from "@/hooks/use-auth";
-import { Course } from "@/types";
+import { Course, Faculty, Level } from "@/types";
 import DataTable from "@/components/ui/data-table";
 import { useCourseColumns } from "./columns";
 import { Card } from "@/components/ui/card";
@@ -17,6 +17,17 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import CustomAlert, { IAlertProps } from "@/components/ui/custom-alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CircleX } from "lucide-react";
+import { capitalizeText } from "@/lib/utils";
+
+type Semester = "harmattan" | "rain";
 
 export default function RegisterCourses() {
   const [data, setData] = useState<Course[] | []>([]);
@@ -24,6 +35,8 @@ export default function RegisterCourses() {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [alert, setAlert] = useState<IAlertProps | null>(null);
+  const [semester, setSemester] = useState<Semester>("harmattan");
+  const [success, setSuccess] = useState(false);
   const { user } = useAuth();
 
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
@@ -49,12 +62,16 @@ export default function RegisterCourses() {
           registerStudentForCourse(courseId, studentId)
         )
       );
+      setSuccess(true);
+
       setAlert({
         type: "success",
         title: "Success",
         description: "Courses registered successfully",
       });
     } catch (error: any) {
+      setSuccess(false);
+
       setAlert({
         type: "error",
         title: "Error",
@@ -69,39 +86,94 @@ export default function RegisterCourses() {
   const loadCourses = async () => {
     setLoading(true);
     try {
-      const fetchedCourses = await fetchCourses();
-      setData(fetchedCourses);
-    } catch (err) {
+      const courses = await fetchCourses(
+        user?.faculty as Faculty,
+        user?.level as Level,
+        semester
+      );
+      setData(courses);
+    } catch (err: any) {
       console.error(err);
+      setAlert({
+        type: "error",
+        title: "Login Failed",
+        description: err.message || "An error occurred while logging in.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user && user?.uid) {
+    if (user?.faculty) {
       loadCourses();
     }
-  }, [user]);
+  }, [semester]);
 
-  if (loading) <Spinner className="text-[--primary]">Loading...</Spinner>;
+  if (!user?.faculty) {
+    return (
+      <div className="bg-red-300 rounded-sm text-red-700 p-4 w-full">
+        <p>
+          <CircleX className="inline-block" /> Please complete your profile
+          settings before course registration.
+        </p>
+      </div>
+    );
+  }
+
+  const handleAlertClose = () => {
+    setAlert(null);
+    if (success) {
+      setSelectedCourses([]);
+    }
+  };
 
   return (
     <>
       <h1 className="text-2xl font-bold tracking-tight mb-3">Courses</h1>
+      <div className="flex items-center gap-4 mb-4">
+        <p> Select Semester:</p>
+        <Select
+          value={semester}
+          onValueChange={(value: Semester) => setSemester(value)}
+        >
+          <SelectTrigger className="w-25">
+            <SelectValue>
+              {semester ? `${capitalizeText(semester)}` : "Select Semester"}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {["harmattan", "rain"].map((value) => (
+              <SelectItem key={value} value={value}>
+                {capitalizeText(value)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       <Card>
-        <DataTable columns={columns} data={data} />
+        {loading ? (
+          <Spinner className="text-[--primary]">Loading...</Spinner>
+        ) : (
+          <DataTable columns={columns} data={data} />
+        )}
+      </Card>
 
-        <div className="flex justify-end px-2">
-          <Button
-            onClick={() => setDialogOpen(true)}
-            className="my-4 px-4 py-2 "
-            disabled={selectedCourses.length === 0}
-          >
-            Register Selected Courses
-          </Button>
-        </div>
+      <div className="flex justify-end px-2">
+        <Button
+          onClick={() => setDialogOpen(true)}
+          className="my-4 px-4 py-2"
+          disabled={selectedCourses.length === 0 || isSubmitting}
+        >
+          {isSubmitting ? (
+            <Spinner className="h-4 w-4 text-white" />
+          ) : (
+            "Register Selected Courses"
+          )}
+        </Button>
+      </div>
 
+      {isDialogOpen && (
         <Dialog
           defaultOpen={isDialogOpen}
           open={isDialogOpen}
@@ -118,8 +190,23 @@ export default function RegisterCourses() {
               {selectedCourses.map((id) => {
                 const course = data.find((c) => c.id === id);
                 return (
-                  <li className="list-disc" key={id}>
-                    {course?.code} - {course?.title}
+                  <li
+                    className="list-disc flex items-center justify-between"
+                    key={id}
+                  >
+                    <span>
+                      {course?.code} - {course?.title}
+                    </span>
+                    <button
+                      className="text-red-600 hover:text-red-800"
+                      onClick={() =>
+                        setSelectedCourses((prev) =>
+                          prev.filter((courseId) => courseId !== id)
+                        )
+                      }
+                    >
+                      Remove
+                    </button>
                   </li>
                 );
               })}
@@ -139,7 +226,7 @@ export default function RegisterCourses() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </Card>
+      )}
 
       {alert && (
         <CustomAlert
@@ -147,7 +234,7 @@ export default function RegisterCourses() {
           title={alert.title}
           description={alert.description}
           duration={2500}
-          onClose={() => setAlert(null)} // Close the alert
+          onClose={handleAlertClose} // Close the alert
         />
       )}
     </>

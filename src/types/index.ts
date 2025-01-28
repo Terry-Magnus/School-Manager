@@ -9,7 +9,6 @@ export interface UserSignup {
   password: string;
   confirm_password: string;
   role: USERROLESENUM;
-  code?: string;
 }
 
 export interface CustomUser extends User {
@@ -17,6 +16,9 @@ export interface CustomUser extends User {
   name?: string;
   role?: USERROLESENUM;
   courses?: Course[];
+  faculty?: string;
+  address?: string;
+  level?: string;
   [key: string]: unknown;
 }
 
@@ -27,35 +29,42 @@ export interface Course {
   creditUnits: number;
   semester: string;
   level: number;
-  students?: string[]; // Array of student IDs
-  examOfficerId: string;
-  createdAt: string;
-  updatedAt: string;
+  faculty: string;
+  students: string[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 export interface Result {
   id: string;
-  //   student: {
-  //     regNumber: string;
-  //     name: string;
-  //     email: string;
-  //   };
-  //   course: {
-  //     id: string;
-  //     title: string;
-  //     code: string;
-  //     creditUnits: number;
-  //   };
-  student: Pick<CustomUser, "regNumber" | "name" | "email">;
+  student: Pick<CustomUser, "regNumber" | "name" | "email" | "level">;
   course: Pick<Course, "id" | "title" | "code" | "creditUnits">;
   semester: string;
   academicYear: string;
   score: number;
   grade: string;
-  examOfficerId: unknown;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+export type Faculty =
+  | "agriculture"
+  | "arts"
+  | "biological_sciences"
+  | "business_administration"
+  | "education"
+  | "engineering"
+  | "environmental_studies"
+  | "health_sciences"
+  | "law"
+  | "medicine"
+  | "pharmaceutical_sciences"
+  | "physical_sciences"
+  | "social_sciences"
+  | "veterinary_medicine"
+  | "vocational_technical_education";
+
+export type Level = "100" | "200" | "300" | "400" | "500";
 
 export type TInputChangeEvent = React.ChangeEvent<
   HTMLInputElement | HTMLTextAreaElement

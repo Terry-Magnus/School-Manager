@@ -10,7 +10,7 @@ export default function Dashboard() {
 
   const loadResults = async () => {
     try {
-      const data = await getNumberOfResultsForStudent(user!.uid);
+      const data = await getNumberOfResultsForStudent(user?.regNumber!);
       setResults(data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -27,7 +27,7 @@ export default function Dashboard() {
         Welcome {user?.name || "Student"}
       </h1>
 
-      <div className="grid grid-cols-1 mt-3 gap-4 sm:grid-cols-2 ">
+      <div className="grid grid-cols-1 mt-3 gap-4 sm:grid-cols-2     ">
         <Card>
           <div className="p-4 flex items-center gap-4 justify-center">
             <BookText className="w-8 h-8" />
