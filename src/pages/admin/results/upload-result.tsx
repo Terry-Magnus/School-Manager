@@ -161,18 +161,20 @@ export default function UploadResult() {
         </div>
 
         <div className="grid gap-2">
-          <Label>Course</Label>
-
-          <CourseSelect
-            selectedCourse={selectedCourse}
-            setSelectedCourse={setSelectedCourse}
+          <StudentSelect // dedicated searchbar for getting student based on regNumber
+            selectedStudent={selectedStudent}
+            setSelectedStudent={setSelectedStudent}
+            setAlert={setAlert}
           />
         </div>
 
         <div className="grid gap-2">
-          <StudentSelect
+          <Label>Course</Label>
+
+          <CourseSelect //get courses based on selected student
             selectedStudent={selectedStudent}
-            setSelectedStudent={setSelectedStudent}
+            selectedCourse={selectedCourse}
+            setSelectedCourse={setSelectedCourse}
             setAlert={setAlert}
           />
         </div>

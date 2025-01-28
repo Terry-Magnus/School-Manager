@@ -17,19 +17,19 @@ export function checkIsActive(href: string, item: SidebarData) {
 export const numbersOnlyRegex = /^(?:\d+(?:\.\d*)?|\.\d+)?$/;
 
 //Function helps generate academic years in format "2024/2025"
+
 export const generateAcademicYears = () => {
   const currentYear = new Date().getFullYear();
+  const baseYear = 2025; // Starting year
   const years = [];
 
-  // Generate current year and next year pairs
-  for (let i = 0; i < 2; i++) {
-    const startYear = currentYear + i;
-    years.push(`${startYear}/${startYear + 1}`);
+  // Generate years from base year up to current year
+  for (let year = baseYear; year <= currentYear; year++) {
+    years.push(`${year}/${year + 1}`);
   }
 
   return years;
 };
-
 // Helper function to calculate grade
 export const calculateGrade = (score: number): string => {
   if (score >= 70) return "A";

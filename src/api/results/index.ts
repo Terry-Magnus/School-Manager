@@ -38,6 +38,21 @@ export const uploadResult = async (
   try {
     const resultsRef = collection(firestore, "results");
 
+    // Check if the result already exists for the student and course
+    const resultQuery = query(
+      resultsRef,
+      where("student.regNumber", "==", resultData.student.regNumber),
+      where("course.id", "==", resultData.course.id)
+    );
+
+    const querySnapshot = await getDocs(resultQuery);
+
+    if (!querySnapshot.empty) {
+      throw new Error(
+        "Result has already been uploaded for this student and course."
+      );
+    }
+
     // Calculate grade based on score
     const grade = calculateGrade(resultData.score);
 
@@ -80,10 +95,12 @@ export const getNumberOfResultsForStudent = async (
   }
 };
 
-export const getNumberOfResultsUploaded = async (): Promise<number> => {
+export const getNumberOfResultsUploaded = async (
+  db: string
+): Promise<number> => {
   try {
-    const resultsRef = collection(firestore, "results");
-    const snapshot = await getCountFromServer(resultsRef);
+    const ref = collection(firestore, db);
+    const snapshot = await getCountFromServer(ref);
 
     // Return the number of documents found (i.e., the number of results)
     return snapshot.data().count;
