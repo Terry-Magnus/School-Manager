@@ -12,7 +12,7 @@ export default function NotFound(props: ErrorTypes) {
   return (
     <div className="h-svh">
       <div className="m-auto flex h-full w-full flex-col items-center justify-center gap-2">
-        <img src="notfound.png" alt="not-found" className="w-48" />
+        <img src="/notfound.png" alt="not-found" className="w-48" />
         <h2 className="text-[6rem] font-bold leading-tight">
           {props.errorCode || 404}
         </h2>

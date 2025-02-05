@@ -17,6 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const role = "admin";
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -30,7 +31,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const userCredential = await userLogin(email, password);
+      const userCredential = await userLogin(email, password, role);
       setUser(userCredential.user);
       setSuccess(true);
       setError(false);

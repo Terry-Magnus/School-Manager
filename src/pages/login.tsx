@@ -18,6 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
+  const role = "student";
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -31,7 +32,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const userCredential = await userLogin(regNumber, password);
+      const userCredential = await userLogin(regNumber, password, role);
       setUser(userCredential.user);
       setSuccess(true);
       setError(false);
