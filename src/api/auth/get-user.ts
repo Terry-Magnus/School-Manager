@@ -9,7 +9,7 @@ interface searchUserProps {
   role: USERROLESENUM.ADMIN | USERROLESENUM.STUDENT;
 }
 export default async function searchUser({
-  param,
+  param, // fields in firebase e.g regNumber, name, email
   searchTerm,
   role,
 }: searchUserProps) {

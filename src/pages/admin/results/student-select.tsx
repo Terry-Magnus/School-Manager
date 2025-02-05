@@ -3,19 +3,22 @@ import { Button } from "@/components/ui/button";
 import { IAlertProps } from "@/components/ui/custom-alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CustomUser, TInputChangeEvent } from "@/types";
+import { numbersOnlyRegex } from "@/lib/utils";
+import { Course, CustomUser, TInputChangeEvent } from "@/types";
 import { USERROLESENUM } from "@/types/enums";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface StudentSelectProps {
   selectedStudent: CustomUser | null;
   setSelectedStudent: Dispatch<SetStateAction<CustomUser | null>>;
+  setSelectedCourse: Dispatch<SetStateAction<Course | null>>;
   setAlert: Dispatch<SetStateAction<IAlertProps | null>>;
 }
 
 const StudentSelect = ({
   selectedStudent,
   setSelectedStudent,
+  setSelectedCourse,
   setAlert,
 }: StudentSelectProps) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,6 +49,11 @@ const StudentSelect = ({
     }
   };
 
+  const handleCancel = () => {
+    setSelectedStudent(null);
+    setSelectedCourse(null);
+  };
+
   return (
     <div className="relative space-y-4">
       <div>
@@ -60,7 +68,10 @@ const StudentSelect = ({
           id="search"
           value={searchTerm}
           disabled={!!selectedStudent}
-          onChange={(e: TInputChangeEvent) => setSearchTerm(e.target.value)}
+          onChange={(e: TInputChangeEvent) =>
+            e.target.value.match(numbersOnlyRegex) &&
+            setSearchTerm(e.target.value)
+          }
           className="mt-1 block w-full rounded-md pr-[100px] border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           placeholder={`${
             selectedStudent ? selectedStudent.name : "Enter registration number"
@@ -68,9 +79,7 @@ const StudentSelect = ({
         />
         <Button
           type="button"
-          onClick={
-            !selectedStudent ? handleSearch : () => setSelectedStudent(null)
-          }
+          onClick={!selectedStudent ? handleSearch : handleCancel}
           disabled={loading}
           className={`${
             selectedStudent ? "bg-red-600" : ""

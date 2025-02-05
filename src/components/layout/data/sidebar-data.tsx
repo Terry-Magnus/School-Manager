@@ -25,7 +25,7 @@ export const sidebarData = {
       icon: Book,
     },
     {
-      title: "Settings",
+      title: "Profile Settings",
       url: "/settings",
       icon: Settings2,
     },
@@ -47,7 +47,7 @@ export const sidebarData = {
       icon: FileText,
     },
     {
-      title: "Settings",
+      title: "Profile Settings",
       url: "/admin/settings",
       icon: Settings2,
     },

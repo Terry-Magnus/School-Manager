@@ -24,7 +24,6 @@ export default function NotFound(props: ErrorTypes) {
         </p>
         <div className="mt-6 flex gap-4">
           <Button onClick={() => navigate(-1)}>Go Back</Button>
-          {/* <Button onClick={() => navigate("/login")}>Back to Home</Button> */}
         </div>
       </div>
     </div>

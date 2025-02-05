@@ -49,10 +49,6 @@ const routes = createBrowserRouter([
           { path: "upload", element: <UploadResults /> },
         ],
       },
-      {
-        path: "results",
-        element: <Results />,
-      },
 
       {
         path: "settings",
@@ -134,6 +130,10 @@ const routes = createBrowserRouter([
           {
             path: "results/upload",
             element: <UploadResults />,
+          },
+          {
+            path: "settings",
+            element: <Settings />,
           },
         ],
       },

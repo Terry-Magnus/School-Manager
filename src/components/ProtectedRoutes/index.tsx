@@ -17,7 +17,6 @@ const ProtectedRoutes = ({ children, allowedRoles }: IProtectedRoutesProps) => {
     return (
       <div className="absolute h-screen w-screen bg-white flex justify-center items-center">
         <Spinner className="text-[--primary]">Loading...</Spinner>
-        {/* <p className="text-md ">Loading...</p> */}
       </div>
     );
   }

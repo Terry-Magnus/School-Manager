@@ -164,6 +164,7 @@ export default function UploadResult() {
           <StudentSelect // dedicated searchbar for getting student based on regNumber
             selectedStudent={selectedStudent}
             setSelectedStudent={setSelectedStudent}
+            setSelectedCourse={setSelectedCourse}
             setAlert={setAlert}
           />
         </div>
